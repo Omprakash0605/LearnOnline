@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import "tailwindcss";
+
+*{
+  font-family: Outfit;
+}
+
+:root {
+  /* Your existing raw variables */
+  --text-course-details-heading-small: 26px;
+  --text-course-details-heading-small--line-height: 36px;
+  --text-course-details-heading-large: 36px;
+  --text-course-details-heading-large--line-height: 44px;
+}
+
+
+@theme {
+  /* Syntax: --text-[your-class-name]: [font-size] / [line-height]; */
+  --text-course-details-heading-small: 26px / 36px;
+  --text-course-details-heading-large: 36px / 44px;
+
+  --text-home-heading-small: 28px;
+  --text-home-heading-small--line-height: 34px;
+
+  --text-home-heading-large: 48px;
+  --text-home-heading-large--line-height: 56px;
+
+  --text-body: 15px;
+  --text-body--line-height: 20px;
+
+  --grid-template-columns-auto: repeat(auto-fit, minmax(200px, 1fr));
+
+  --height-section-height: 500px; /* Replace with your desired height */
+
+  /* Extend Max Width Theme */
+  --max-width-course-card: 424px;
+
+  /* Extend Box Shadow Theme */
+  --shadow-custom-card: 0px 4px 15px 2px rgba(0, 0, 0, 0.1);
+}
+
+
+@utility rich-text {
+  font-size: 15px;
+  color: #7A7B7D;
+
+  p { margin-bottom: 16px; }
+  h1 { font-size: 36px; font-weight: 800; color: #252525; margin: 32px 0; }
+  h2 { font-size: 22px; font-weight: 700; color: #252525; margin: 24px 0; }
+  h3 { font-size: 18px; font-weight: 600; color: #333333; margin: 20px 0; }
+  h4 { font-size: 16px; font-weight: 500; color: #444444; margin: 16px 0; }
+  h5 { font-size: 14px; font-weight: 400; color: #555555; margin: 12px 0; }
+  h6 { font-size: 12px; font-weight: 400; color: #666666; margin: 8px 0; }
+  strong { font-weight: 700; }
+  ol { margin-left: 30px; list-style-type: decimal; }
+  ul { margin-left: 30px; list-style-type: disc; }
+  li { margin-bottom: 8px; }
+}
