@@ -2,8 +2,9 @@ import { createContext, useEffect, useState } from "react";
 import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
-export const AppContext = createContext()
+import { useAuth, useUser } from "@clerk/react";
 
+export const AppContext = createContext()
 
 export const AppContextProvider = (props)=>{
 
