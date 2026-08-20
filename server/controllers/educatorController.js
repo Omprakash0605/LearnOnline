@@ -1,5 +1,6 @@
 import { clerkClient } from '@clerk/express'
-import Course from '../models/Course'
+import Course from '../models/Course.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 //update role to educator 
 export const updateRoleToEducator =async (req, res)=>{
@@ -7,7 +8,7 @@ export const updateRoleToEducator =async (req, res)=>{
         const userId = req.auth.userId
 
         await clerkClient.users.updateUserMetadata(userId, {
-            publishMetadata: {
+            publicMetadata:{
                 role: 'educator',
             }
         })
@@ -16,22 +17,23 @@ export const updateRoleToEducator =async (req, res)=>{
 
     }catch(error){
 
-        res.json({success:false , message:error.message})
+        res.json({success: false, message:error.message})
     
     }
 }
 
-export const addCourse= aysnc(req, res) =>{
+//Add new course
+export const addCourse = async (req, res)=>{
     try {
         const {courseData} = req.body
         const imageFile = req.file
         const educatorId = req.auth.userId
 
         if(!imageFile){
-            return res.json({sucess: false, message:'Thumbnail not attached'})
+            return res.json({success: false, message:'Thumbnail not attached'})
         }
 
-        const parsedCourseData = await JSON.parge(courseData)
+        const parsedCourseData = JSON.parse(courseData)
         parsedCourseData.educator = educatorId
         const newCourse = await Course.create(parsedCourseData)
 
@@ -39,7 +41,9 @@ export const addCourse= aysnc(req, res) =>{
         newCourse.courseThumbnail = imageUpload.secure_url
         await newCourse.save()
 
-        res.json( {sucess: true, message: 'Course Added'})
-    }
+        res.json( {success: true, message: 'Course Added'})
 
+    }catch(error){
+        res.json({ success: false, message: error.message })
+    }
 }

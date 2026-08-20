@@ -16,15 +16,16 @@ await connectCloudinary()
 
 //Middlewares
 app.use(cors())
-app.use(clerkMiddleware())
+app.use(express.json());
+app.use(clerkMiddleware());
 
 //Routes
 app.get('/', (req,res)=>{
     res.send("API working")
 })
 
-app.post('/clerk',express.json(), clerkWebhooks)
-app.use('/api/educator', express.json(), educatorRouter)
+app.post('/clerk', clerkWebhooks)
+app.use('/api/educator', educatorRouter);
 
 
 //port 
