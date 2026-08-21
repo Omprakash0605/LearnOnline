@@ -27,7 +27,6 @@ app.get('/', (req,res)=>{
 app.post('/clerk', clerkWebhooks)
 app.use('/api/educator', educatorRouter);
 
-
 //port 
 const PORT = process.env.PORT || 5000
 
