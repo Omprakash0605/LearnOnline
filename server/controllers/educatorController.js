@@ -129,3 +129,70 @@ export const getEducatorCourses = async (req, res) => {
         });
     }
 };
+
+//Get Educator Dashboard Data (Total Earning, Enrolled Students, No. of Courses)
+
+export const eduacatorDashboardData = async ()=>{
+    try{
+        const { userId } = getAuth(req);
+        const courses = await Courses.find({eduactor: userId});
+        const totalCourses = courses.length;
+
+        const courseIds = courses.map(course => course._id);
+        
+        //Calculate total earnings from purchases
+        const purchases =await Purchase.find({
+            courseId: {$in: courseIds},
+            status: 'completed'
+        });
+
+        const totalEarnings = purchases.reduce((sum, purchase)=> sum + purchase.amount, 0);
+
+        //collect unique enrolled student IDs with their course titles
+        const enrolledStudentsData = [];
+        for(const course of courses){
+            const students = await User.find({
+                _id: {$in: course.enrolledStudents}
+            }, 'name imageUrl');
+        }
+
+        students.forEach(student => {
+            enrolledStudentsData.push({
+                courseTitle: course.courseTitle,
+                student
+            });
+        });
+
+        res.json({success:true, dashboardData:{
+            totalEarnings, enrolledStudentsData, totalCourses
+        }})
+
+    }catch(error){
+        res.json({success: false, message: error.message});
+    }
+}
+
+//get enrolled students data with purchase data
+export const getEnrollledStudentsData = async(req,res)=>{
+    try {
+        const { userId } = getAuth(req);
+        const courses = await Courses.find({eduactor: userId});
+        const courseIds = courses.map(course=> course._id);
+
+        const purchase = await Purchase.find({
+            courseId: {$in: courseIds},
+            status: 'completed'
+        }).populate('userId', 'name imageUrl').populate('courseId', 'courseTitle')
+
+        const enrolledStudents = purchases.map(purchase =>({
+            student: purchase.userId,
+            courseTitle: purchase.courseId.courseTitle,
+            purchaseData: purchase.createdAt
+        }));
+
+        res.json({success:true, enrolledStudents})
+
+    } catch (error) {
+        res.json({ success:false, message:error.message});
+    }
+}
