@@ -17,13 +17,21 @@ export const getUserData = async(req, res)=>{
     }
 }
 
-//users enrolled courses ith lecturelinks
+//users enrolled courses with lecturelinks
 export const userEnrolledCourses = async (req, res)=>{
     try{
-        const {usedId} = getAuth(req);
-        const userData = await User.findById(userId).populate('enrolledCourses')
+        const { userId } = getAuth(req);
+        const userData = await User.findById(userId).populate('enrolledCourses');
 
-        res.json({success: true, enrolledCourses: userData.enrolledCourses})
+        if (!userData) {
+            return res.json({
+                success: false,
+                message: "User Not Found"
+            });
+        }
+
+        res.json({success: true, enrolledCourses: userData.enrolledCourses});
+
     }catch(error){
         res.json({success: false, message:error.message})
     }
