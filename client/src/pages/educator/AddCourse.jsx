@@ -10,7 +10,7 @@ import axios from 'axios';
 
 const AddCourse = () => {
 
-  const { backendUrl, getToken} = useContext(AppContext);
+  const { backendUrl, getToken, fetchAllCourses } = useContext(AppContext);
 
   const quillRef = useRef(null);
   const editorRef = useRef(null);
@@ -100,6 +100,7 @@ const AddCourse = () => {
       e.preventDefault()
       if(!image){
         toast.error('Thumbnail not Selected')
+        return;
       }
 
       const courseData = {
@@ -124,7 +125,12 @@ const AddCourse = () => {
         setDiscount(0)
         setImage(null)
         setChapters([])
-        quillRef.current.root.innerHTML =""
+        if (quillRef.current) {
+          quillRef.current.root.innerHTML = ""
+        }
+        if (fetchAllCourses) {
+          fetchAllCourses()
+        }
       }else{
         toast.error(data.message)
       }
@@ -147,7 +153,7 @@ const AddCourse = () => {
 
         <div className='flex flex-col gap-1'>
           <p>Course Title</p>
-          <input onChange={e => setCourseTitle(e.target.value)} type="text" placeholder='type here' className='outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500' required />
+          <input onChange={e => setCourseTitle(e.target.value)} value={courseTitle} type="text" placeholder='type here' className='outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500' required />
         </div>
 
         <div className='flex flex-col gap-1'>

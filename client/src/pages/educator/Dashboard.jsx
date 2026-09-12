@@ -59,7 +59,7 @@ const Dashboard = () => {
             <img src={assets.earning_icon} alt="earning_icon" />
             <div>
               <p className='text-2xl font-medium text-gray-600'>{currency}{dashboardData.totalEarnings}</p>
-              <p className='text-base text-gray-500'>Total Enrollments</p>
+              <p className='text-base text-gray-500'>Total Earnings</p>
             </div>
           </div>
         </div>
@@ -80,8 +80,8 @@ const Dashboard = () => {
                   <tr key={index} className='border-b border-gray-500/20'>
                     <td className='px-4 py-3 text-center hidden sm:table-cell'>{index+1}</td>
                     <td className='md:px-4 px-2 py-3 flex items-center space-x-3'>
-                      <img src={item.student.imageUrl} alt="Profile" className='w-9 h-9 rounded-full'/>
-                      <span className='truncate'>{item.student.name}</span>
+                      <img src={item.student?.imageUrl || assets.profile_img} alt="Profile" className='w-9 h-9 rounded-full object-cover'/>
+                      <span className='truncate'>{item.student?.name || 'Student'}</span>
                     </td>
                     <td className='px-4 py-3'>{item.courseTitle}</td>
                   </tr>

@@ -21,7 +21,7 @@ const CourseDetails = () => {
   const [playerData, setPlayerData] = useState(null)
 
 
-  const {allCourses, calculateRating, calculateChapterTime ,calculateCourseDuration, calculateNoOflectures, currency, backendUrl, userData, getToken} = useContext(AppContext)
+  const {allCourses, calculateRating, calculateChapterTime, calculateCourseDuration, calculateNoOflectures, currency, backendUrl, userData, fetchUserData, fetchUserEnrolledCourses, getToken, navigate} = useContext(AppContext)
 
   const fetchCourseData = async()=>{
     try {
@@ -30,29 +30,37 @@ const CourseDetails = () => {
       if(data.success){
         setCourseData(data.courseData)
       }else{
-        toast.error(data.messsage)
+        toast.error(data.message)
       }
     } catch (error) {
       toast.error(error.message)
     }
   }
 
-  //fetch enrolled course
+  // enroll course (dummy payment)
   const enrollCourse = async()=>{
     try {
       if(!userData){
-        return toast.warn('Login to Enroll')
+        return toast.warn('Please login to enroll')
       }
       if(isAlreadyEnrolled){
-        return toast.warn('Already Enrolled')
+        navigate('/player/' + courseData._id)
+        return
       }
       const token = await getToken();
 
-      const{data} = await axios.post(backendUrl + '/api/user/purchase', {courseId: courseData._id}, {headers: {Authorization: `Bearer ${token}`}})
+      const {data} = await axios.post(
+        backendUrl + '/api/user/purchase',
+        {courseId: courseData._id},
+        {headers: {Authorization: `Bearer ${token}`}}
+      )
 
       if(data.success){
-        const {session_url} = data
-        window.location.replace(session_url)
+        toast.success(data.message || 'Enrolled successfully!')
+        setIsAlreadyEnrolled(true)
+        if (fetchUserData) await fetchUserData()
+        if (fetchUserEnrolledCourses) await fetchUserEnrolledCourses()
+        navigate('/my-enrollments')
       }else{
         toast.error(data.message)
       }
@@ -104,7 +112,7 @@ const CourseDetails = () => {
         <p>{courseData.enrolledStudents.length}  {courseData.enrolledStudents.length>1 ? 'students':'student'}</p>
       </div>
 
-      <p className='text-sm'>Course by <span className='text-blue-600'>{courseData.educator.name}</span></p>
+      <p className='text-sm'>Course by <span className='text-blue-600'>{courseData.educator?.name || 'Educator'}</span></p>
 
       <div className='pt-8 text-gray-800'>
         <h2 className='text-xl font-semibold'>Course Structure</h2>
@@ -131,9 +139,12 @@ const CourseDetails = () => {
                       <div className='flex items-center justify-between w-full text-gray-800 text-xs md:text-default'>
                         <p>{lecture.lectureTitle}</p>
                         <div className='flex gap-2'>
-                          {lecture.isPreviewFree && <p onClick={()=> setPlayerData({
-                            videoId: lecture.lectureUrl.split('/').pop()
-                          })} className='text-blue-500 cursor-pointer'>Preview</p>}
+                          {lecture.isPreviewFree && <p onClick={()=>{
+                            const url = lecture.lectureUrl;
+                            const match = url ? url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/) : null;
+                            const videoId = match ? match[1] : (url ? url.split('/').pop() : '');
+                            setPlayerData({ videoId })
+                          }} className='text-blue-500 cursor-pointer'>Preview</p>}
                           <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units: ['h','m']})}</p>
                         </div>
                       </div>
@@ -205,7 +216,18 @@ const CourseDetails = () => {
 
           </div>
 
-          <button onClick={enrollCourse} className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium cursor-pointer'>{isAlreadyEnrolled ? 'Already Enrolled':'Enroll Now'}</button>
+          <button 
+            onClick={() => {
+              if (isAlreadyEnrolled) {
+                navigate('/player/' + courseData._id)
+              } else {
+                enrollCourse()
+              }
+            }} 
+            className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium cursor-pointer hover:bg-blue-700 transition'
+          >
+            {isAlreadyEnrolled ? 'Already Enrolled (Go to Course)' : 'Enroll Now'}
+          </button>
 
           <div className='pt-6'>
             <p className='md:text-xl text-lg font-medium text-gray-800'>What's in the course?</p>

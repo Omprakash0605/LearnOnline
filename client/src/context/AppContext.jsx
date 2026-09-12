@@ -87,15 +87,18 @@ export const AppContextProvider = (props)=>{
     }
 
     //function calculate to no of lectures in the course
-    const calculateNoOflectures = (course)=>{
+    const calculateNoOfLectures = (course)=>{
         let totalLectures = 0;
-        course.courseContent.forEach((chapter) =>{
-            if(Array.isArray(chapter.chapterContent)){
-                totalLectures += chapter.chapterContent.length;
-            }
-        });
+        if(course && Array.isArray(course.courseContent)){
+            course.courseContent.forEach((chapter) =>{
+                if(Array.isArray(chapter.chapterContent)){
+                    totalLectures += chapter.chapterContent.length;
+                }
+            });
+        }
         return totalLectures;
     }
+    const calculateNoOflectures = calculateNoOfLectures;
 
     //fetch user enrolled courses
     const fetchUserEnrolledCourses = async()=>{
@@ -125,7 +128,7 @@ export const AppContextProvider = (props)=>{
     },[user])
 
     const value = {
-        currency, allCourses, navigate, calculateRating, isEducator, setIsEducator,calculateChapterTime ,calculateCourseDuration, calculateNoOflectures,enrolledCourses, fetchUserEnrolledCourses, backendUrl, userData, setUserData, getToken, fetchAllCourses
+        currency, allCourses, navigate, calculateRating, isEducator, setIsEducator, calculateChapterTime, calculateCourseDuration, calculateNoOfLectures, calculateNoOflectures, enrolledCourses, fetchUserEnrolledCourses, backendUrl, userData, setUserData, fetchUserData, getToken, fetchAllCourses
     }
 
     return (
