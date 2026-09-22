@@ -9,7 +9,7 @@ const educatorRouter = express.Router()
 educatorRouter.get('/update-role', updateRoleToEducator)
 
 // Only educators can add courses
-educatorRouter.post('/add-course',upload.single('image'), protectEducator, addCourse)
+educatorRouter.post('/add-course', protectEducator, upload.single('image'), addCourse)
 
 
 educatorRouter.get('/courses', protectEducator, getEducatorCourses)

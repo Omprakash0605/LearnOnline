@@ -1,4 +1,5 @@
 import Course from "../models/Course.js"
+import mongoose from "mongoose";
 
 //get all Courses
 export const getAllCourses = async (req, res)=>{
@@ -6,7 +7,7 @@ export const getAllCourses = async (req, res)=>{
         const courses = await Course.find({isPublished: true}).select(['-courseContent', '-enrolledStudents']).populate({path: 'educator'})
         res.json({success:true, courses})
     }catch(error){
-        res.json({success:false, message: error.message})
+        res.status(500).json({success:false, message: error.message})
     }
 }
 
@@ -14,10 +15,14 @@ export const getAllCourses = async (req, res)=>{
 export const getCourseId = async(req,res)=>{
     const { id } = req.params
     try {
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({success: false, message: 'Course not found'})
+        }
+
         const courseData = await Course.findById(id).populate({path: 'educator'})
 
         if(!courseData){
-            return res.json({success: false, message: 'Course not found'})
+            return res.status(404).json({success: false, message: 'Course not found'})
         }
 
         //remove lectureURL if isPreviewFree is False 
@@ -36,6 +41,6 @@ export const getCourseId = async(req,res)=>{
         res.json({success:true, courseData})
 
     }catch(error){
-        res.json({success:false, message: error.message})
+        res.status(500).json({success:false, message: error.message})
     }
 }

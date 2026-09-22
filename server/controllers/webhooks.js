@@ -15,40 +15,40 @@ export const clerkWebhooks = async (req, res)=>{
 
         const {data,type} = req.body
 
+        const fullName = [data.first_name, data.last_name].filter(Boolean).join(' ').trim() || 'User';
+        const email = data.email_addresses?.[0]?.email_address || '';
+
         switch(type) {
             case 'user.created': {
                 const userData = {
                     _id: data.id,
-                    email: data.email_addresses[0]?.email_address,
-                    name:data.first_name + " " + data.last_name,
-                    imageUrl: data.image_url,
+                    email,
+                    name: fullName,
+                    imageUrl: data.image_url || '',
                 }
                 await User.create(userData);
-                res.json({})
-                break;
+                return res.json({ success: true, message: 'User created' });
             }
             case 'user.updated': {
                 const userData = {
-                    email: data.email_addresses[0]?.email_address,
-                    name: data.first_name + " " + data.last_name,
-                    imageUrl: data.image_url,
+                    email,
+                    name: fullName,
+                    imageUrl: data.image_url || '',
                 }
-                await User.findByIdAndUpdate(data.id, userData)
-                res.json({})
-                break;
+                await User.findByIdAndUpdate(data.id, userData);
+                return res.json({ success: true, message: 'User updated' });
             }
 
             case 'user.deleted' : {
-                await User.findByIdAndDelete(data.id)
-                res.json({})
-                break;
+                await User.findByIdAndDelete(data.id);
+                return res.json({ success: true, message: 'User deleted' });
             }
 
             default:
-                break;
+                return res.json({ success: true, received: true });
         }
 
     } catch (error){
-        res.json({success: false, message: error.message})
+        return res.status(400).json({success: false, message: error.message})
     }
 };

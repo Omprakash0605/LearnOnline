@@ -28,8 +28,8 @@ app.get('/', (req,res)=>{
 
 app.post('/clerk', clerkWebhooks)
 app.use('/api/educator', educatorRouter);
-app.use('/api/course', express.json(), courseRouter);
-app.use('/api/user', express.json(), userRouter);
+app.use('/api/course', courseRouter);
+app.use('/api/user', userRouter);
 
 //port 
 const PORT = process.env.PORT || 5000
