@@ -16,15 +16,15 @@ const Sidebar = () => {
     ];
 
   return isEducator && (
-    <div>
+    <div className='w-16 md:w-64 border-r border-gray-200 shrink-0 min-h-[calc(100vh-70px)] bg-white py-2'>
       {menuItems.map((item)=>(
         <NavLink 
         to={item.path}
         key={item.name}
         end={item.path === '/educator'}
-        className={({isActive})=> `flex items-center md:flex-row flex-col md:justify-start justify-center py-3.5 md:px-10 gap-3 ${isActive ? 'bg-indigo-50 border-r-[6px] border-indigo-500/90' : 'hover:bg-gray-100/90 border-r-[6px] border-white hover:border-gray-100/90'}`} >
-          <img src={item.icon} alt="" className='w-6 h-6' />
-          <p className='md:block hidden text-center'>{item.name}</p>
+        className={({isActive})=> `flex items-center md:flex-row flex-col md:justify-start justify-center py-3.5 md:px-8 gap-3 transition-colors ${isActive ? 'bg-indigo-50 border-r-[4px] md:border-r-[6px] border-indigo-500 font-medium text-indigo-600' : 'hover:bg-gray-50 text-gray-600 border-r-[4px] md:border-r-[6px] border-transparent'}`} >
+          <img src={item.icon} alt="" className='w-5 h-5 shrink-0' />
+          <p className='md:block hidden text-sm truncate'>{item.name}</p>
         </NavLink>
       ))}
     </div>

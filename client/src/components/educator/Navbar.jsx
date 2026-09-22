@@ -9,10 +9,13 @@ const Navbar = () => {
   const { user } = useUser()
 
   return (
-    <div className='flex items-center justify-between px-4 md:px-8 border-b border-gray-500 py-3'>
-      <Link to='/'><img src={assets.logo} alt="Logo" className='w-58 lg:w-62' /></Link>
+    <div className='flex items-center justify-between px-4 sm:px-8 border-b border-gray-500/20 py-3 bg-white'>
+      <Link to='/'><img src={assets.logo} alt="Logo" className='w-36 sm:w-44 md:w-52 shrink-0' /></Link>
 
-      <div className='flex items-center gap-5 text-gray-500'><p>Hi! {user ? user.fullName : 'Developers'}</p>{user ? <UserButton /> : <img className='max-w-8' src={assets.profile_img} />}</div>
+      <div className='flex items-center gap-3 sm:gap-5 text-gray-500 text-sm'>
+        <p className='truncate max-w-[140px] sm:max-w-none'>Hi! {user ? user.fullName : 'Developers'}</p>
+        {user ? <UserButton /> : <img className='w-8 h-8 rounded-full' src={assets.profile_img} alt="profile" />}
+      </div>
     </div>
   )
 }

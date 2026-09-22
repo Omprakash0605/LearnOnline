@@ -12,7 +12,7 @@ export const AppContextProvider = (props)=>{
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const currency= import.meta.env.VITE_CURRENCY
+    const currency = (import.meta.env.VITE_CURRENCY || '₹').replace(/['"]/g, '').trim() || '₹';
     const navigate = useNavigate()
 
     const {getToken} = useAuth()
@@ -42,7 +42,7 @@ export const AppContextProvider = (props)=>{
     //Fetch UserData 
     const fetchUserData = async() =>{
 
-        if(user.publicMetadata.role === 'educator'){
+        if(user?.publicMetadata?.role === 'educator'){
             setIsEducator(true)
         }
         try{
